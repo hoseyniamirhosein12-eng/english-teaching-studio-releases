@@ -11,6 +11,11 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.2.1
+
+- Preview the first IELTS Speaking mock with three timed exam slides and three guided review slides.
+- Play a four-minute cue-card video excerpt from the Part 2 review or the IELTS Speaking recommendations in Video Studio.
+
 ## What's new in 2.2.0
 
 - Audio Studio plays local listening tracks. Audio and video can attach to individual lessons and supported teaching sections.
