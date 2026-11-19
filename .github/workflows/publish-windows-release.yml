@@ -1,4 +1,5 @@
 name: Build and publish Windows Stable Release
+# Source tags are produced only after the private Windows build and regression suite pass.
 
 on:
   push:
