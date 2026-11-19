@@ -6,6 +6,9 @@
 
 [Open the latest Stable release and download the Windows installer](https://github.com/hoseyniamirhosein12-eng/english-teaching-studio-releases/releases/latest).
 
+
+Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in the private source repository. The publishing workflow reruns regression checks before uploading the installer and updater metadata here.
+
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
 ## Updating safely
