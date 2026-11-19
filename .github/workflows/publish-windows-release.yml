@@ -4,10 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       source_tag:
-        description: 'Tag in the private source repository to build (for example: v1.2.0)'
-        required: true
-        default: 'v1.2.0'
+        description: 'Optional private-source tag (for example: v1.2.1). Leave empty to use the newest stable tag.'
+        required: false
+        default: ''
         type: string
+  schedule:
+    - cron: '*/15 * * * *'
 
 permissions:
   contents: write
@@ -21,41 +23,117 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 45
     steps:
-      - name: Checkout private source
+      - name: Check out private source and all tags
         uses: actions/checkout@v5
         with:
           repository: hoseyniamirhosein12-eng/english-teaching-studio-source
-          ref: ${{ inputs.source_tag }}
+          ref: main
           token: ${{ secrets.SOURCE_READ_TOKEN }}
           path: source
+          fetch-depth: 0
           persist-credentials: false
 
+      - name: Resolve and validate the stable source tag
+        id: resolve
+        shell: pwsh
+        working-directory: source
+        env:
+          SOURCE_TAG_INPUT: ${{ inputs.source_tag }}
+          GITHUB_TOKEN: ${{ github.token }}
+          TARGET_REPOSITORY: ${{ github.repository }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $requestedTag = ([string]$env:SOURCE_TAG_INPUT).Trim()
+
+          if ($requestedTag) {
+            if ($requestedTag -notmatch '^v\d+\.\d+\.\d+$') {
+              throw "Use a stable version tag such as v1.2.1. Prerelease tags are not published."
+            }
+            $tag = $requestedTag
+            git show-ref --verify --quiet "refs/tags/$tag"
+            if ($LASTEXITCODE -ne 0) { throw "Source tag $tag was not found in the private repository." }
+          } else {
+            $stableTags = @(git tag --list 'v*' --sort=-version:refname | Where-Object { $_ -match '^v\d+\.\d+\.\d+$' })
+            if ($stableTags.Count -eq 0) { throw 'No stable vMAJOR.MINOR.PATCH tag was found in the private source repository.' }
+            $tag = $stableTags[0].Trim()
+          }
+
+          git checkout --detach "$tag"
+          if ($LASTEXITCODE -ne 0) { throw "Could not check out source tag $tag." }
+
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          $tagVersion = $tag.Substring(1)
+          if ($tagVersion -ne [string]$pkg.version) {
+            throw "Source tag $tag does not match package.json version $($pkg.version)."
+          }
+
+          "source_tag=$tag" >> $env:GITHUB_OUTPUT
+          "version=$tagVersion" >> $env:GITHUB_OUTPUT
+
+          $headers = @{
+            Authorization = "Bearer $env:GITHUB_TOKEN"
+            Accept = 'application/vnd.github+json'
+            'X-GitHub-Api-Version' = '2022-11-28'
+          }
+
+          $existingRelease = $null
+          try {
+            $existingRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/$env:TARGET_REPOSITORY/releases/tags/$tag" -Headers $headers -Method Get
+          } catch {
+            $statusCode = 0
+            if ($_.Exception.Response -and $_.Exception.Response.StatusCode) {
+              $statusCode = [int]$_.Exception.Response.StatusCode
+            }
+            if ($statusCode -ne 404) { throw }
+          }
+
+          if ($null -ne $existingRelease) {
+            "skip=true" >> $env:GITHUB_OUTPUT
+            Write-Host "Release $tag already exists. Skipping duplicate build."
+            exit 0
+          }
+
+          $latestRelease = $null
+          try {
+            $latestRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/$env:TARGET_REPOSITORY/releases/latest" -Headers $headers -Method Get
+          } catch {
+            $statusCode = 0
+            if ($_.Exception.Response -and $_.Exception.Response.StatusCode) {
+              $statusCode = [int]$_.Exception.Response.StatusCode
+            }
+            if ($statusCode -ne 404) { throw }
+          }
+
+          if ($null -ne $latestRelease) {
+            $latestVersionText = ([string]$latestRelease.tag_name) -replace '^v', ''
+            $candidateVersion = [version]$tagVersion
+            $latestVersion = [version]$latestVersionText
+            if ($candidateVersion -le $latestVersion) {
+              throw "Refusing to publish $tag because the latest public Stable release is $($latestRelease.tag_name). Use a higher version."
+            }
+          }
+
+          "skip=false" >> $env:GITHUB_OUTPUT
+          Write-Host "Validated new Stable release $tag."
+
       - name: Set up Node.js
+        if: steps.resolve.outputs.skip != 'true'
         uses: actions/setup-node@v5
         with:
           node-version: 22
 
-      - name: Validate source version
-        shell: pwsh
-        working-directory: source
-        env:
-          SOURCE_TAG: ${{ inputs.source_tag }}
-        run: |
-          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
-          $tagVersion = $env:SOURCE_TAG -replace '^v', ''
-          if ($tagVersion -ne $pkg.version) {
-            throw "Source tag version $tagVersion does not match package.json version $($pkg.version)."
-          }
-
       - name: Install dependencies
+        if: steps.resolve.outputs.skip != 'true'
         working-directory: source
         run: npm install --no-audit --no-fund
 
       - name: Run static regression tests
+        if: steps.resolve.outputs.skip != 'true'
         working-directory: source
         run: npm run test:static
 
       - name: Build and publish to this public repository
+        if: steps.resolve.outputs.skip != 'true'
         working-directory: source
         run: npm run dist:win:release
         env:
@@ -64,10 +142,10 @@ jobs:
           ETS_RELEASE_REPO: ${{ github.event.repository.name }}
 
       - name: Keep a CI copy of the release output
-        if: always()
+        if: always() && steps.resolve.outputs.skip != 'true'
         uses: actions/upload-artifact@v6
         with:
-          name: english-teaching-studio-windows-${{ inputs.source_tag }}
+          name: english-teaching-studio-windows-${{ steps.resolve.outputs.source_tag }}
           path: |
             source/release/*.exe
             source/release/*.blockmap
