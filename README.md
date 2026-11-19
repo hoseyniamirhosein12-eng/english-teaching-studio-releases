@@ -11,6 +11,11 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.1.2
+
+- Send the desktop app identity required by the embedded YouTube player.
+- Add compact and full-screen playback in Video Studio and lesson video previews.
+
 ## What's new in 2.1.1
 
 - Restored Dashboard and sidebar navigation, including Settings and the dedicated IELTS Speaking practice page.
