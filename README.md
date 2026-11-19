@@ -11,6 +11,15 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.0.0
+
+- IELTS Speaking AI Studio with **Generate Sample Answer**, **Correct My Answer**, **Upgrade My Band**, vocabulary building, examiner follow-up questions and mistake explanations.
+- Contextual **Generate with AI** access from Speaking Part 1, Part 2 and Part 3 lesson cards and the Lesson Studio teacher panel.
+- A four-skill IELTS navigation structure for Speaking, Writing, Listening and Reading. Listening and Reading content expansion is scheduled for a later content update.
+- Restored the **English with ANDRI** vector brand mark in the sidebar, topbar and Lesson Studio, with improved lesson typography.
+- AI Speaking requests are teacher-initiated and use the separately configured OpenAI API, Gemini or Claude API connection. Personal ChatGPT plan access is not used for student submissions.
+- Speaking feedback and band estimates are formative only. Pronunciation is not assessed from typed answers.
+
 ## Updating safely
 
 - Keep the existing English Teaching Studio installation in place.
