@@ -11,6 +11,12 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.2.2
+
+- Collapse workspace navigation when teaching.
+- Teach with three IELTS Speaking mock tests, clickable stages, presentation mode, and pen, highlighter and eraser controls. Remove recommendations from both the mock review and Video Studio.
+- Read PDFs in Content Library with continuous scrolling, page navigation and local annotations.
+
 ## What's new in 2.2.1
 
 - Preview the first IELTS Speaking mock with three timed exam slides and three guided review slides.
