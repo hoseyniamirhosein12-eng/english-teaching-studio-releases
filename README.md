@@ -11,6 +11,11 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.1.1
+
+- Restored Dashboard and sidebar navigation, including Settings and the dedicated IELTS Speaking practice page.
+- Unified manual and background Stable update checks so download progress, readiness, and errors are reported consistently.
+
 ## What's new in 2.0.0
 
 - IELTS Speaking AI Studio with **Generate Sample Answer**, **Correct My Answer**, **Upgrade My Band**, vocabulary building, examiner follow-up questions and mistake explanations.
