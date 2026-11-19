@@ -11,6 +11,13 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.2.0
+
+- Audio Studio plays local listening tracks. Audio and video can attach to individual lessons and supported teaching sections.
+- Content Library has Books, PowerPoint, PDFs and Other sections, with file removal and in-app PDF previews. PowerPoint previews use an installed copy of LibreOffice and show static slides.
+- Whiteboard uses a solid white canvas with full-screen mode. Game Center adds quiz feedback, replay and recent results. Class Timer adds presets and custom durations.
+- Dashboard activity selection is faster with large histories, and media libraries are paginated.
+
 ## What's new in 2.1.2
 
 - Send the desktop app identity required by the embedded YouTube player.
