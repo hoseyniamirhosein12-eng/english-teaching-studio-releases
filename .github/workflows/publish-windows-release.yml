@@ -1,5 +1,6 @@
 name: Build and publish Windows Stable Release
 # Source tags are produced only after the private Windows build and regression suite pass.
+# v2.1.0 source tag is now verified; this run will publish it if it is the newest stable release.
 # Re-check the newest verified source tag when updater reliability changes land.
 
 on:
