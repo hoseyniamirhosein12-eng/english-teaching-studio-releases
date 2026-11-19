@@ -1,0 +1,76 @@
+name: Build and publish Windows Stable Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: 'Tag in the private source repository to build (for example: v1.2.0)'
+        required: true
+        default: 'v1.2.0'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ets-windows-stable-release
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout private source
+        uses: actions/checkout@v5
+        with:
+          repository: hoseyniamirhosein12-eng/english-teaching-studio-source
+          ref: ${{ inputs.source_tag }}
+          token: ${{ secrets.SOURCE_READ_TOKEN }}
+          path: source
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Validate source version
+        shell: pwsh
+        working-directory: source
+        env:
+          SOURCE_TAG: ${{ inputs.source_tag }}
+        run: |
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          $tagVersion = $env:SOURCE_TAG -replace '^v', ''
+          if ($tagVersion -ne $pkg.version) {
+            throw "Source tag version $tagVersion does not match package.json version $($pkg.version)."
+          }
+
+      - name: Install dependencies
+        working-directory: source
+        run: npm install --no-audit --no-fund
+
+      - name: Run static regression tests
+        working-directory: source
+        run: npm run test:static
+
+      - name: Build and publish to this public repository
+        working-directory: source
+        run: npm run dist:win:release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ETS_GITHUB_OWNER: ${{ github.repository_owner }}
+          ETS_RELEASE_REPO: ${{ github.event.repository.name }}
+
+      - name: Keep a CI copy of the release output
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: english-teaching-studio-windows-${{ inputs.source_tag }}
+          path: |
+            source/release/*.exe
+            source/release/*.blockmap
+            source/release/latest.yml
+          if-no-files-found: warn
+          retention-days: 14
