@@ -11,6 +11,12 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.4.0
+
+- Open any of the 15 games to enter its illustrated play space. Play three rounds, pause to use the whiteboard, and review the classroom result.
+- Teach 241 Conversation lessons as 16-slide workshops with model exchanges, private role cards, role swaps, and a final speaking task. Previous lesson slides remain available under Reference slides.
+- Try the featured B1 workshop, Changing plans without sounding rude, from Conversation Lab.
+
 ## What's new in 2.3.0
 
 - Teach 40 three-part IELTS Speaking mocks with Band 7 target responses, part-by-part analysis and developed Part 3 discussions.
