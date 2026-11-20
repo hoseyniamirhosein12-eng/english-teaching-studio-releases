@@ -11,6 +11,13 @@ Stable releases are built from a matching, verified `vMAJOR.MINOR.PATCH` tag in 
 
 The first installation is a one-time setup. After installation, the app checks GitHub Releases shortly after launch and every six hours. New Stable versions download in the background, then the app asks before installing and restarting. You do not need to uninstall the existing app or install a separate copy for each update.
 
+## What's new in 2.3.0
+
+- Teach 40 three-part IELTS Speaking mocks with Band 7 target responses, part-by-part analysis and developed Part 3 discussions.
+- Open 78 grammar units, 60 vocabulary topics and 240 conversation lessons. Select A3 for the Studio bridge from A2 to B1.
+- Run 40 workplace communication scenarios, 28 scored session quizzes and twelve three-round classroom games. Lessons include topic-linked YouTube clips.
+- Use the top annotation tools on lesson slides, mock tests and PDF pages. The video player's full-screen button returns directly to the active lesson presentation.
+
 ## What's new in 2.2.2
 
 - Collapse workspace navigation when teaching.
